@@ -1,0 +1,35 @@
+# Node.js with React
+# Build a Node.js project that uses React.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  - develop
+
+pr:
+  - "*"
+
+variables:
+  - group: nextjs-env-variables
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+  - job: Sync
+    condition: and(ne(variables['System.PullRequest.creator'], 'dependabot[bot]'), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+    steps:
+      - checkout: self
+        clean: true
+        fetchDepth: 0
+
+      - script: |
+          git config --global user.email "go@dubaisouth.ae"
+          git config --global user.name "Genieology"
+        displayName: "Configure Git"
+
+      - script: |
+          git remote add azure-repo https://go:$(PAT)@dev.azure.com/DubaiSouthIT/Dubai%20South%20Website/_git/Dubai%20South%20Website
+          git pull https://go:$(PAT)@dev.azure.com/DubaiSouthIT/Dubai%20South%20Website/_git/Dubai%20South%20Website
+          git push azure-repo HEAD:develop --force
+        displayName: "Push to Azure Repo"

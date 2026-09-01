@@ -1,0 +1,8 @@
+.eslintrc.cjs
+lint-staged.config.js
+next.config.js
+dist/**/*
+commitlint.config.js
+jest.config.mjs
+release.config.js
+src/gql/**/*
